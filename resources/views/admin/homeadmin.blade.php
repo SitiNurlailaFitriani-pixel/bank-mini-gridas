@@ -21,7 +21,7 @@
         }
     </style>
 </head>
-<body class="bg-[#DCE8FA] min-h-screen flex">
+<body class="bg-[#dbe7f6] h-screen flex text-[#122e6f] overflow-hidden">
 
     <!-- Sidebar Left -->
     <aside class="w-64 bg-[#0A2558] text-white flex flex-col justify-between p-4 min-h-screen shrink-0">
@@ -39,31 +39,31 @@
 
             <!-- Navigation Links -->
             <nav class="space-y-2">
-                <a href="{{ route('admin.homeadmin') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#1E75D8] text-white font-medium">
+                <a href="{{ route('admin.homeadmin') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#2582ce] text-white font-medium text-sm">
                     <i class="fa-solid fa-house w-5"></i>
                     Dashboard
                 </a>
-                <a href="{{ route('admin.nasabah.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition">
+                <a href="{{ route('admin.nasabah.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition text-sm">
                     <i class="fa-solid fa-address-card w-5"></i>
                     Data Nasabah
                 </a>
-                <a href="{{ route('admin.rekening.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition">
+                <a href="{{ route('admin.rekening.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition text-sm">
                     <i class="fa-solid fa-id-card w-5"></i>
                     Data Rekening
                 </a>
-                <a href="{{ route('admin.setor_tunai.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition">
+                <a href="{{ route('admin.setor_tunai.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition text-sm">
                     <i class="fa-solid fa-money-bill-transfer w-5"></i>
                     Setor Tunai
                 </a>
-                <a href="{{ route('admin.tarik_tunai.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition">
+                <a href="{{ route('admin.tarik_tunai.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition text-sm">
                     <i class="fa-solid fa-hand-holding-dollar w-5"></i>
                     Tarik Tunai
                 </a>
-                <a href="{{ route('admin.riwayat_transaksi.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition">
+                <a href="{{ route('admin.riwayat_transaksi.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition text-sm">
                     <i class="fa-solid fa-list-check w-5"></i>
                     Riwayat Transaksi
                 </a>
-                <a href="{{ route('admin.laporan_transaksi.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition">
+                <a href="{{ route('admin.laporan_transaksi.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#13326C] text-gray-200 transition text-sm">
                     <i class="fa-solid fa-chart-line w-5"></i>
                     Laporan Transaksi
                 </a>
@@ -84,215 +84,238 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-6">
-        <div class="bg-white rounded-3xl p-8 min-h-[calc(100vh-3rem)] shadow-sm">
-
-            <!-- Alert Flash Message -->
-            @if(session('success'))
-                <div class="mb-6 bg-emerald-100 border border-emerald-400 text-emerald-800 px-4 py-3 rounded-2xl text-sm font-semibold flex items-center justify-between">
-                    <span><i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i> {{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-2xl text-sm font-semibold flex items-center justify-between">
-                    <span><i class="fa-solid fa-triangle-exclamation mr-2 text-red-600"></i> {{ session('error') }}</span>
-                </div>
-            @endif
-
-            <!-- Top Header & Lonceng Notifikasi -->
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-[#0A2558]">Dashboard Admin</h1>
-
-                <!-- Notification & Profile Area -->
-                <div class="flex items-center gap-4">
+    <main class="flex-1 p-8 flex flex-col justify-start h-screen overflow-y-auto">
+        
+        <!-- HEADER TOP BAR (SAMA PERSIS DENGAN KODE PETUGAS) -->
+        <div class="flex justify-end items-center gap-6 mb-4">
+            
+            @php
+                $pendingCount = isset($totalPendingCount) ? $totalPendingCount : 0;
+            @endphp
+            
+            <div class="relative" x-data="{ open: false }">
+                <!-- Tombol Lonceng (Background Solid #e8f1fb & hover #d5e4f7 persis Petugas) -->
+                <button 
+                    @click="open = !open" 
+                    class="w-12 h-12 bg-[#e8f1fb] text-[#0c235b] rounded-full flex items-center justify-center hover:bg-[#d5e4f7] transition relative focus:outline-none"
+                    title="Konfirmasi Transaksi"
+                >
+                    <i class="fa-solid fa-bell text-xl"></i>
                     
-                    <!-- Lonceng Notifikasi -->
-                    <div class="relative" x-data="{ open: false }">
-                        <!-- Tombol Lonceng -->
-                        <button @click="open = !open" class="relative p-3 bg-[#E4EEFA] text-[#0A2558] rounded-full hover:bg-[#d5e4f7] transition focus:outline-none">
-                            <i class="fa-solid fa-bell text-lg"></i>
-                            
-                            <!-- Badge Angka Merah jika ada transaksi Pending -->
-                            @if(isset($totalPendingCount) && $totalPendingCount > 0)
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                                    {{ $totalPendingCount }}
-                                </span>
-                            @endif
-                        </button>
+                    @if($pendingCount > 0)
+                        <span class="absolute top-0 right-0 bg-[#f05252] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                            {{ $pendingCount > 99 ? '99+' : $pendingCount }}
+                        </span>
+                    @endif
+                </button>
 
-                        <!-- Menu Dropdown Notifikasi -->
-                        <div x-show="open" 
-                             @click.away="open = false" 
-                             x-transition
-                             class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
-                             style="display: none;">
-                            
-                            <!-- Header Dropdown -->
-                            <div class="bg-[#0A2558] text-white px-4 py-3 flex justify-between items-center">
-                                <h3 class="font-bold text-sm flex items-center gap-2">
-                                    <i class="fa-solid fa-clock-rotate-left"></i> Konfirmasi Transaksi
-                                </h3>
-                                <span class="bg-amber-400 text-[#0A2558] text-xs font-extrabold px-2.5 py-0.5 rounded-full">
-                                    {{ $totalPendingCount ?? 0 }} Pending
-                                </span>
-                            </div>
-
-                            <!-- List Notifikasi Transaksi -->
-                            <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
-                                @forelse($notifikasiPending ?? [] as $notif)
-                                    <div class="p-3.5 hover:bg-slate-50 transition flex items-start gap-3">
-                                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 mt-1 bg-amber-500">
-                                            <i class="fa-solid fa-hand-holding-dollar text-sm"></i>
-                                        </div>
-                                        <div class="flex-1 text-xs">
-                                            <div class="flex justify-between font-bold text-[#0A2558]">
-                                                <span>{{ $notif->nama_nasabah }}</span>
-                                                <span class="text-[10px] text-slate-400 font-normal">
-                                                    {{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}
-                                                </span>
-                                            </div>
-                                            <p class="text-slate-600 mt-0.5">
-                                                Pengajuan <span class="font-semibold text-slate-800">{{ $notif->jenis }}</span> 
-                                                sebesar <span class="font-bold text-emerald-600">Rp {{ number_format($notif->jumlah, 0, ',', '.') }}</span>
-                                            </p>
-                                            <p class="text-[11px] text-slate-400 italic mt-0.5">
-                                                Rekening: {{ $notif->no_rekening }}
-                                            </p>
-                                            
-                                            <!-- Tombol Akses Cepat Langsung Setujui / Tolak -->
-                                            <div class="mt-2.5 flex items-center gap-2">
-                                                <!-- Form Setujui -->
-                                                <form action="{{ route('admin.tarik_tunai.setujui', $notif->id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-[11px] font-semibold transition flex items-center gap-1">
-                                                        <i class="fa-solid fa-check"></i> Setujui
-                                                    </button>
-                                                </form>
-
-                                                <!-- Form Tolak -->
-                                                <form action="{{ route('admin.tarik_tunai.tolak', $notif->id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-[11px] font-semibold transition flex items-center gap-1" onclick="return confirm('Yakin ingin menolak pengajuan ini?')">
-                                                        <i class="fa-solid fa-xmark"></i> Tolak
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <div class="p-6 text-center text-slate-400 text-xs">
-                                        <i class="fa-regular fa-bell-slash text-2xl mb-2 block text-slate-300"></i>
-                                        Tidak ada pengajuan transaksi yang perlu dikonfirmasi saat ini.
-                                    </div>
-                                @endforelse
-                            </div>
-
+                <!-- Card Dropdown Notifikasi -->
+                <div 
+                    x-show="open" 
+                    @click.outside="open = false" 
+                    x-transition
+                    class="absolute right-0 mt-3 w-96 bg-white rounded-2xl shadow-2xl overflow-hidden z-50 text-left border border-gray-100"
+                    style="display: none;"
+                >
+                    <!-- Header Warna Biru Gelap -->
+                    <div class="bg-[#0b235a] text-white px-5 py-3.5 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-left text-lg"></i>
+                            <h4 class="text-base font-bold tracking-wide">Konfirmasi Transaksi</h4>
                         </div>
+                        <span class="bg-[#f2b705] text-[#0b235a] text-xs font-extrabold px-3 py-1 rounded-full shadow-sm">
+                            {{ $pendingCount }} Pending
+                        </span>
                     </div>
 
-                    <!-- User Profile Badge -->
-                    <div class="flex items-center gap-2.5 text-[#0A2558] font-bold pl-2 border-l border-slate-200">
-                        <i class="fa-solid fa-circle-user text-2xl"></i>
-                        <span>Admin</span>
-                    </div>
+                    <!-- Isi / List Item Notifikasi -->
+                    <div class="p-4 space-y-4 max-h-80 overflow-y-auto">
+                        @forelse($notifikasiPending ?? [] as $item)
+                            <div class="border-b border-gray-100 pb-3 last:border-b-0 last:pb-0">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-11 h-11 bg-[#f5a623] text-white rounded-full flex items-center justify-center shrink-0 shadow-sm">
+                                        <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+                                    </div>
 
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <h5 class="font-bold text-[#0b235a] text-sm">{{ $item->nama_nasabah }}</h5>
+                                            <span class="text-[11px] text-gray-400 font-medium">
+                                                {{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}
+                                            </span>
+                                        </div>
+
+                                        <p class="text-xs text-gray-600 mt-0.5">
+                                            Pengajuan <span class="font-bold text-gray-800">{{ $item->jenis }}</span> sebesar 
+                                            <span class="text-[#00a86b] font-bold">Rp {{ number_format($item->jumlah, 0, ',', '.') }}</span>
+                                        </p>
+
+                                        <p class="text-[11px] text-gray-400 italic mt-0.5">
+                                            Rekening: {{ $item->no_rekening }}
+                                        </p>
+
+                                        <!-- Tombol Setujui dan Tolak -->
+                                        <div class="flex items-center gap-2 mt-3">
+                                            <form action="{{ route('admin.tarik_tunai.setujui', $item->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="bg-[#009661] hover:bg-[#007d51] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                                                    <i class="fa-solid fa-check text-xs"></i>
+                                                    <span>Setujui</span>
+                                                </button>
+                                            </form>
+
+                                            <form action="{{ route('admin.tarik_tunai.tolak', $item->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="bg-[#dc2626] hover:bg-[#b91c1c] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm" onclick="return confirm('Yakin ingin menolak pengajuan ini?')">
+                                                    <i class="fa-solid fa-xmark text-xs"></i>
+                                                    <span>Tolak</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-gray-400 text-xs">
+                                Tidak ada permintaan transaksi yang pending.
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
 
+            <!-- Profile Info -->
+            <div class="flex items-center gap-3 text-[#0c235b] font-bold text-base border-l border-gray-300 pl-4">
+                <i class="fa-solid fa-circle-user text-3xl"></i>
+                <span>Admin</span>
+            </div>
+        </div>
+
+        <!-- Card Putih Utama -->
+        <div class="bg-white rounded-3xl p-8 shadow-sm w-full space-y-8 flex-1">
+
+            <!-- Alert Sukses -->
+            @if(session('success'))
+                <div class="mb-6 bg-[#d1fadf] border border-[#a6f4c5] text-[#027a48] px-5 py-3.5 rounded-2xl flex items-center gap-3 text-sm font-semibold shadow-sm">
+                    <div class="w-5 h-5 rounded-full bg-[#12b76a] text-white flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </div>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            <!-- Alert Ditolak / Error -->
+            @if(session('error'))
+                <div class="mb-6 bg-[#fee4e2] border border-[#fecdca] text-[#b42318] px-5 py-3.5 rounded-2xl flex items-center gap-3 text-sm font-semibold shadow-sm">
+                    <div class="w-5 h-5 rounded-full bg-[#f04438] text-white flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </div>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
+            <!-- Header Dashboard Admin -->
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-[#0c235b]">
+                    Dashboard Admin
+                </h2>
+            </div>
+
             <!-- Statistics Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <!-- Card 1: Total Nasabah -->
-                <div class="border-2 border-[#0A2558] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="bg-[#0A2558] text-white p-4 rounded-full w-14 h-14 flex items-center justify-center shrink-0">
+                <div class="border-2 border-[#0c235b] rounded-2xl p-6 flex items-center gap-5">
+                    <div class="w-16 h-16 bg-[#0c235b] text-white rounded-full flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-users text-2xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-[#0A2558]">Total Nasabah</p>
-                        <p class="text-2xl font-bold text-[#0A2558]">{{ $totalNasabah }}</p>
+                        <p class="text-sm font-bold text-[#0c235b]">Total Nasabah</p>
+                        <p class="text-3xl font-extrabold text-[#0c235b] mt-1">{{ $totalNasabah }}</p>
                     </div>
                 </div>
 
                 <!-- Card 2: Total Rekening -->
-                <div class="border-2 border-[#0A2558] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="bg-[#0A2558] text-white p-4 rounded-full w-14 h-14 flex items-center justify-center shrink-0">
+                <div class="border-2 border-[#0c235b] rounded-2xl p-6 flex items-center gap-5">
+                    <div class="w-16 h-16 bg-[#0c235b] text-white rounded-full flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-id-card text-2xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-[#0A2558]">Total Rekening</p>
-                        <p class="text-2xl font-bold text-[#0A2558]">{{ $totalRekening }}</p>
+                        <p class="text-sm font-bold text-[#0c235b]">Total Rekening</p>
+                        <p class="text-3xl font-extrabold text-[#0c235b] mt-1">{{ $totalRekening }}</p>
                     </div>
                 </div>
 
                 <!-- Card 3: Total Transaksi -->
-                <div class="border-2 border-[#0A2558] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="bg-[#0A2558] text-white p-4 rounded-full w-14 h-14 flex items-center justify-center shrink-0">
+                <div class="border-2 border-[#0c235b] rounded-2xl p-6 flex items-center gap-5">
+                    <div class="w-16 h-16 bg-[#0c235b] text-white rounded-full flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-list-ol text-2xl"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-[#0A2558]">Total Transaksi</p>
-                        <p class="text-2xl font-bold text-[#0A2558]">{{ $totalTransaksi }}</p>
+                        <p class="text-sm font-bold text-[#0c235b]">Total Transaksi</p>
+                        <p class="text-3xl font-extrabold text-[#0c235b] mt-1">{{ $totalTransaksi }}</p>
                     </div>
                 </div>
 
             </div>
 
             <!-- Table Section: Transaksi Terbaru -->
-            <h2 class="text-xl font-bold text-[#0A2558] mb-4">Transaksi hari ini</h2>
+            <div>
+                <h3 class="text-lg font-bold text-[#0c235b] mb-4">Transaksi hari ini</h3>
 
-            <div class="overflow-x-auto border border-gray-200 rounded-xl">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-[#E4EEFA] text-[#0A2558] font-bold border-b border-gray-200">
-                            <th class="p-4 text-center border-r border-gray-200 w-1/4">Tanggal</th>
-                            <th class="p-4 text-center border-r border-gray-200 w-1/4">Jenis</th>
-                            <th class="p-4 text-center border-r border-gray-200 w-1/4">Jumlah</th>
-                            <th class="p-4 text-center w-1/4">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($transaksiHariIni as $transaksi)
-                            @php
-                                $statusLower = strtolower($transaksi->status ?? '');
-                                $isPending   = in_array($statusLower, ['pending', '0', 'menunggu', 'process', 'proses']);
-                                $isDitolak   = in_array($statusLower, ['ditolak', 'gagal', 'reject', 'canceled', '2']);
-                            @endphp
-                            <tr class="hover:bg-gray-50 text-center">
-                                <td class="p-4 border-r border-gray-200 text-gray-700">
-                                    {{ $transaksi->created_at ? \Carbon\Carbon::parse($transaksi->created_at)->format('d/m/Y H:i') : '-' }}
-                                </td>
-                                <td class="p-4 border-r border-gray-200 text-gray-700 font-medium">
-                                    {{ $transaksi->jenis }}
-                                </td>
-                                <td class="p-4 border-r border-gray-200 text-gray-700 font-semibold">
-                                    Rp {{ number_format($transaksi->jumlah ?? 0, 0, ',', '.') }}
-                                </td>
-                                <td class="p-4 text-center">
-                                    @if($isPending)
-                                        <span class="inline-block px-4 py-1 border-2 border-amber-500 text-amber-600 bg-amber-50 rounded-xl text-xs font-semibold">
-                                            Pending
-                                        </span>
-                                    @elseif($isDitolak)
-                                        <span class="inline-block px-4 py-1 border-2 border-red-500 text-red-600 bg-red-50 rounded-xl text-xs font-semibold">
-                                            {{ $transaksi->status }}
-                                        </span>
-                                    @else
-                                        <span class="inline-block px-4 py-1 border-2 border-emerald-500 text-emerald-600 bg-emerald-50 rounded-xl text-xs font-semibold">
-                                            {{ $transaksi->status }}
-                                        </span>
-                                    @endif
-                                </td>
+                <div class="overflow-x-auto border border-gray-200 rounded-xl">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#dbe7f6] text-[#0c235b] font-bold border-b border-gray-200">
+                                <th class="p-4 text-center border-r border-gray-200 w-1/4">Tanggal</th>
+                                <th class="p-4 text-center border-r border-gray-200 w-1/4">Jenis</th>
+                                <th class="p-4 text-center border-r border-gray-200 w-1/4">Jumlah</th>
+                                <th class="p-4 text-center w-1/4">Status</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="p-6 text-center text-gray-500">
-                                    Belum ada data transaksi hari ini.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @forelse($transaksiHariIni as $transaksi)
+                                @php
+                                    $statusLower = strtolower($transaksi->status ?? '');
+                                    $isPending   = in_array($statusLower, ['pending', '0', 'menunggu', 'process', 'proses']);
+                                    $isDitolak   = in_array($statusLower, ['ditolak', 'gagal', 'reject', 'canceled', '2']);
+                                @endphp
+                                <tr class="hover:bg-gray-50 text-center">
+                                    <td class="p-4 border-r border-gray-200 text-gray-700">
+                                        {{ $transaksi->created_at ? \Carbon\Carbon::parse($transaksi->created_at)->format('d/m/Y H:i') : '-' }}
+                                    </td>
+                                    <td class="p-4 border-r border-gray-200 text-gray-700 font-medium">
+                                        {{ $transaksi->jenis }}
+                                    </td>
+                                    <td class="p-4 border-r border-gray-200 text-gray-700 font-semibold">
+                                        Rp {{ number_format($transaksi->jumlah ?? 0, 0, ',', '.') }}
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        @if($isPending)
+                                            <span class="inline-block px-4 py-1 border-2 border-amber-500 text-amber-600 bg-amber-50 rounded-xl text-xs font-semibold">
+                                                Pending
+                                            </span>
+                                        @elseif($isDitolak)
+                                            <span class="inline-block px-4 py-1 border-2 border-red-500 text-red-600 bg-red-50 rounded-xl text-xs font-semibold">
+                                                {{ $transaksi->status }}
+                                            </span>
+                                        @else
+                                            <span class="inline-block px-4 py-1 border-2 border-emerald-500 text-emerald-600 bg-emerald-50 rounded-xl text-xs font-semibold">
+                                                {{ $transaksi->status }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="p-6 text-center text-gray-500">
+                                        Belum ada data transaksi hari ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
